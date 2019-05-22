@@ -1,73 +1,56 @@
 package metier;
 
-import lejos.hardware.*;
-import lejos.hardware.motor.BaseRegulatedMotor;
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.MotorPort;
+import lejos.robotics.RegulatedMotor;
+import metier.Motor;
 import ressources.Etat;
-
-
-import java.util.logging.Logger;
-
-
 
 public class VehiculeControler {		
 	
-	Motor moteur;
+	Etat etatVehicule;
 	
-	MotorPort.D;
-	
-	BaseRegulatedMotor regulator;
-	
-	public VehiculeControler vehiculeControler ;
+	private Motor moteurGauche; 
+	private Motor moteurDroit;
     
+	
 	public VehiculeControler() {
-		regulator = new BaseRegulatedMotor();		
-		moteur = new Motor(null);
+		etatVehicule = Etat.contact;		
+		this.moteurGauche = new Motor(new EV3LargeRegulatedMotor(MotorPort.D));
+		this.moteurDroit = new Motor(new EV3LargeRegulatedMotor(MotorPort.A));
+		RegulatedMotor T[] = {this.moteurDroit.getMotor()};
+		this.moteurGauche.getMotor().synchronizeWith(T);		
 	}
 	
-	/*UltrasonicSensor capteurUltrason;
-	GyroSensor capteurGyro;
-	ContactSensor capteurContact;
-	ColorSensor capteurCouleur;*/
-	Logger logger;
+	int vitesseRange = 25;
 	
-	//constant
-	
-	int vitesseRange = 10;
-	int rotationRange = 10;	
-	
-	
-	public VehiculeControler getInstance(){
-		if(vehiculeControler == null)
-		{
-			vehiculeControler = new VehiculeControler();
-		}
-		return vehiculeControler;
-	}
 	
 	public void start(){	
 	// certaines conditions sont intégrées dans des public voids
 	// intermédiaires afin de ne pas polluer le code.
-		if (!(moteur.getEtatMoteur() == Etat.contact))
+		if (etatVehicule == Etat.contact)
 		{
-			moteur.setEtatMoteur(Etat.neutral);	
-			logger.info("start() : Passage de l’état moteur à neutral");
+			etatVehicule = Etat.neutral;				
 		}
 		else
 		{
-			//logger.error("start() : le véhicule est déjà démarré");
+			System.out.println("Moteur déjà démarré");
 		}
 	}
 	
 	public void stop(){
-		if(moteur.getEtatMoteur() != Etat.neutral)
+		if(etatVehicule == Etat.forward || etatVehicule == Etat.backward)
 		{
-			moteur.stopped();
-			logger.info("stop() :arrêt du véhicule");
+			etatVehicule = Etat.neutral;
+			moteurGauche.getMotor().startSynchronization();
+			moteurGauche.stop();
+			moteurDroit.stop();
+	        moteurGauche.getMotor().endSynchronization();
+	        
 		}
 		else
 		{
-			//logger.error("stop() : le véhicule est déjà stoppé");
+			System.out.println("vehicule déjà à l'arret");
 		}
 	}
 	
@@ -75,77 +58,97 @@ public class VehiculeControler {
 	// if { le moteur est en marche arrière il doit d’abord passer
 	// par l’état neutral
 	// (point mort) pour pouvoir être en marche avant (forward)
-		if(moteur.getEtatMoteur() == Etat.neutral || moteur.getEtatMoteur() == Etat.forward)
+		if(etatVehicule == Etat.neutral)
 		{
-			moteur.setEtatMoteur(Etat.forward);
-			moteur.push();
-			moteur.speedUp(vitesseRange);
-			logger.info("forward() : le moteur tourne en avant");
+			etatVehicule = Etat.forward;
+			moteurGauche.getMotor().startSynchronization();
+			moteurGauche.forward();
+			moteurDroit.forward();
+			moteurGauche.getMotor().endSynchronization();
+	        
 		}
 		else
 		{
-			//logger.error("forward() : impossible de faire tourner le moteur en avant");
+			System.out.println("Impossible de faire avancer");
 		}
 	}
 	
 	public void backward()
 	{
-		if (moteur.getEtatMoteur() == Etat.neutral || moteur.getEtatMoteur() == Etat.backward)
+		if (etatVehicule == Etat.neutral)
 		{
-			moteur.pull();		
-			moteur.speedUp(vitesseRange);
-			logger.info("backward() : le moteur tourne en arrière");
-	
+			etatVehicule = Etat.backward;
+			moteurGauche.getMotor().startSynchronization();
+			moteurGauche.backward();
+			moteurDroit.backward();
+			moteurGauche.getMotor().endSynchronization();
 		}
 		else
 		{	
-			//logger.error("backward() : impossible de faire tourner le moteur en arriere");
+			System.out.println("Impossible de faire reculer");
 		}
 	}
 	
 	public void left(){
-		if (moteur.getEtatMoteur() == Etat.contact)
+		if (etatVehicule == Etat.forward || etatVehicule == Etat.backward)
 		{
-			moteur.rotation(- rotationRange);
-			logger.info("left() : modification trajectoire (gauche)");
+			moteurGauche.getMotor().startSynchronization();
+			moteurGauche.setSpeed(moteurGauche.getSpeed());
+			moteurDroit.setSpeed(moteurDroit.getSpeed() * 2);
+			moteurGauche.getMotor().endSynchronization();			
 		}
 		else
 		{
-			//logger.error("left() : impossible de modifier la trajectoire");
+			System.out.println("Impossible de faire tourner à gauche");
 		}
 	}
 	
 	public void right()
 	{
-		if(moteur.getEtatMoteur() == Etat.contact)
+		if (etatVehicule == Etat.forward || etatVehicule == Etat.backward)
 		{
-			moteur.rotation(rotationRange);
-			logger.info("right() : modification trajectoire (droite)");
+			moteurGauche.getMotor().startSynchronization();
+			moteurGauche.setSpeed(moteurGauche.getSpeed()* 2);
+			moteurDroit.setSpeed(moteurDroit.getSpeed());
+			moteurGauche.getMotor().endSynchronization();
 		}
 		else
-		{	
-			//logger.error("right() : impossible de modifier la	trajectoire");
+		{
+			System.out.println("Impossible de faire tourner à droite");
 		}
 	}
 	
-	public void ring()
+	/*public void ring()
 	{
-		/*buzz();*/
+		buzz();
 		logger.info("left() : klaxon");
-	}
+	}*/
 	
 	public void up()
 	{
-		moteur.speedUp(vitesseRange);
-		logger.info("up() : la vitesse du robot augmente");
+		if (moteurGauche.getSpeed() < 250 && moteurDroit.getSpeed() < 250 ) {
+			moteurGauche.getMotor().startSynchronization();
+			moteurGauche.setSpeed(moteurGauche.getSpeed() + vitesseRange);
+			moteurDroit.setSpeed(moteurDroit.getSpeed() + vitesseRange);
+			moteurGauche.getMotor().endSynchronization();
+		 }
 	}
+	
 	
 	public void down()
 	{
-		moteur.speedDown(vitesseRange);
-		logger.info("down() : la vitesse du robot diminue");
+		if (moteurGauche.getSpeed() > vitesseRange && moteurDroit.getSpeed() > vitesseRange ) {
+			moteurGauche.getMotor().startSynchronization();
+			moteurGauche.setSpeed(moteurGauche.getSpeed() - vitesseRange);
+			moteurDroit.setSpeed(moteurDroit.getSpeed() - vitesseRange);
+			moteurGauche.getMotor().endSynchronization();
+		 }
+		else
+		{
+			stop();
+		}
 	}
-	
+	/*
 	public void urgency()
 	{
 		moteur.urgency();
@@ -218,4 +221,13 @@ public class VehiculeControler {
 		return moteur.getEtatMoteur();
 	}
 	*/
+	
+	public Etat getEtatVehicule() {
+		return etatVehicule;
+	}
+
+	public void setEtatVehicule(Etat etatVehicule) {
+		this.etatVehicule = etatVehicule;
+	}
+
 }

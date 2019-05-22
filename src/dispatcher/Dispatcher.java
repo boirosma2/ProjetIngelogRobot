@@ -47,9 +47,53 @@ public class Dispatcher {
     	}*/  
     	
     	 vehiculeControler.start();
+    	 lcd.clear();
+    	 lcd.drawString("Demarrer", 4, 4);
+    	 
+    	 Thread.sleep(2500);
+    	 
     	 vehiculeControler.forward();
-    	 Thread.sleep(1000);
+    	 lcd.clear();
+    	 lcd.drawString("Avancer", 4, 4);    	 
+    	
+    	 Thread.sleep(2500);
+    	 
+    	 vehiculeControler.up();
+    	 lcd.clear();
+    	 lcd.drawString("Accelerer", 4, 4);
+    	 
+    	 Thread.sleep(2500);   	 
+    	  
+    	 vehiculeControler.right();
+    	 lcd.clear();
+    	 lcd.drawString("Droite", 4, 4);
+    	 
+    	 Thread.sleep(2500);
+    	 
+    	 vehiculeControler.left();
+    	 vehiculeControler.left();
+    	 lcd.clear();
+    	 lcd.drawString("Gauche", 4, 4);
+    	 
+    	 Thread.sleep(2500);    
+    	 
+    	 vehiculeControler.up();
+    	 lcd.clear();
+    	 lcd.drawString("Accelerer", 4, 4);
+    	 
+    	 Thread.sleep(2500);
+    	 
+    	 vehiculeControler.down();
+    	 lcd.clear();
+    	 lcd.drawString("Ralentir", 4, 4);
+    	 
+    	 Thread.sleep(2500);
+    	 
     	 vehiculeControler.stop();
+    	 lcd.clear();
+    	 lcd.drawString("Stop", 4, 4);
+    	 
+    	 Thread.sleep(2500);
 	}
 	
 	
@@ -84,10 +128,10 @@ public class Dispatcher {
 			  vehiculeControler.backward();
 			    break;
 		  case "up":
-			  vehiculeControler.up();
+			  //vehiculeControler.up();
 			    break;
 		  case "down":
-			  vehiculeControler.down();
+			  //vehiculeControler.down();
 			    break;
 		  default:
 			  stop_app = false;
