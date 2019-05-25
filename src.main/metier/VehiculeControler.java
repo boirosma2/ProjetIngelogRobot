@@ -9,21 +9,21 @@ import ressources.Etat;
 public class VehiculeControler {		
 	
 	Etat etatVehicule;
-	
+	int vitesse;	
 	private Motor moteurGauche; 
 	private Motor moteurDroit;
-    
 	
+	int vitesseRange = 25;
+	int vitesseBase = 50;	
+
 	public VehiculeControler() {
 		etatVehicule = Etat.contact;		
 		this.moteurGauche = new Motor(new EV3LargeRegulatedMotor(MotorPort.D));
 		this.moteurDroit = new Motor(new EV3LargeRegulatedMotor(MotorPort.A));
 		RegulatedMotor T[] = {this.moteurDroit.getMotor()};
-		this.moteurGauche.getMotor().synchronizeWith(T);		
+		this.moteurGauche.getMotor().synchronizeWith(T);
+		vitesse = 0;
 	}
-	
-	int vitesseRange = 25;
-	
 	
 	public void start(){	
 	// certaines conditions sont intégrées dans des public voids
@@ -65,7 +65,14 @@ public class VehiculeControler {
 			moteurGauche.forward();
 			moteurDroit.forward();
 			moteurGauche.getMotor().endSynchronization();
-	        
+			vitesse = vitesseBase;	        
+		}
+		else if ( etatVehicule == Etat.forward)
+		{
+			moteurGauche.getMotor().startSynchronization();
+			moteurGauche.getMotor().setSpeed(vitesse);
+			moteurDroit.getMotor().setSpeed(vitesse);
+			moteurGauche.getMotor().endSynchronization();
 		}
 		else
 		{
@@ -82,6 +89,14 @@ public class VehiculeControler {
 			moteurGauche.backward();
 			moteurDroit.backward();
 			moteurGauche.getMotor().endSynchronization();
+			vitesse = vitesseBase;
+		}
+		else if ( etatVehicule == Etat.backward)
+		{
+			moteurGauche.getMotor().startSynchronization();
+			moteurGauche.getMotor().setSpeed(vitesse);
+			moteurDroit.getMotor().setSpeed(vitesse);
+			moteurGauche.getMotor().endSynchronization();
 		}
 		else
 		{	
@@ -89,12 +104,16 @@ public class VehiculeControler {
 		}
 	}
 	
-	public void left(){
+	public void gauche(){
 		if (etatVehicule == Etat.forward || etatVehicule == Etat.backward)
 		{
 			moteurGauche.getMotor().startSynchronization();
-			moteurGauche.setSpeed(moteurGauche.getSpeed());
-			moteurDroit.setSpeed(moteurDroit.getSpeed() * 2);
+			if(moteurGauche.getSpeed() == moteurDroit.getSpeed())
+			{
+			vitesse = moteurGauche.getSpeed();
+			}
+			moteurGauche.setSpeed((int)(moteurGauche.getSpeed()* 0.66));
+			moteurDroit.setSpeed((int)(moteurDroit.getSpeed() * 1.33));
 			moteurGauche.getMotor().endSynchronization();			
 		}
 		else
@@ -103,13 +122,17 @@ public class VehiculeControler {
 		}
 	}
 	
-	public void right()
+	public void droite()
 	{
 		if (etatVehicule == Etat.forward || etatVehicule == Etat.backward)
 		{
 			moteurGauche.getMotor().startSynchronization();
-			moteurGauche.setSpeed(moteurGauche.getSpeed()* 2);
-			moteurDroit.setSpeed(moteurDroit.getSpeed());
+			if(moteurGauche.getSpeed() == moteurDroit.getSpeed())
+			{
+			vitesse = moteurGauche.getSpeed();
+			}
+			moteurGauche.setSpeed((int)(moteurGauche.getSpeed()* 1.33));
+			moteurDroit.setSpeed((int)(moteurDroit.getSpeed()*0.66));
 			moteurGauche.getMotor().endSynchronization();
 		}
 		else
@@ -124,9 +147,11 @@ public class VehiculeControler {
 		logger.info("left() : klaxon");
 	}*/
 	
-	public void up()
+	public void accelerer()
 	{
-		if (moteurGauche.getSpeed() < 250 && moteurDroit.getSpeed() < 250 ) {
+		if (moteurGauche.getSpeed() < 900 && moteurDroit.getSpeed() < 900 )
+		{
+			vitesse += vitesseRange;
 			moteurGauche.getMotor().startSynchronization();
 			moteurGauche.setSpeed(moteurGauche.getSpeed() + vitesseRange);
 			moteurDroit.setSpeed(moteurDroit.getSpeed() + vitesseRange);
@@ -135,9 +160,11 @@ public class VehiculeControler {
 	}
 	
 	
-	public void down()
+	public void ralentir()
 	{
-		if (moteurGauche.getSpeed() > vitesseRange && moteurDroit.getSpeed() > vitesseRange ) {
+		if (moteurGauche.getSpeed() > vitesseRange && moteurDroit.getSpeed() > vitesseRange )
+		{
+			vitesse -= vitesseRange;
 			moteurGauche.getMotor().startSynchronization();
 			moteurGauche.setSpeed(moteurGauche.getSpeed() - vitesseRange);
 			moteurDroit.setSpeed(moteurDroit.getSpeed() - vitesseRange);
@@ -145,6 +172,7 @@ public class VehiculeControler {
 		 }
 		else
 		{
+			vitesse = 0;
 			stop();
 		}
 	}
@@ -182,13 +210,7 @@ public class VehiculeControler {
 	{
 		logger.info("brightness() : le véhicule a repéré une couleur");
 		return capteurCouleur.color();
-	}*/
-	
-	/*public void rotationAngle()
-	{
-		logger.info("rotationAngle() : récupération de l’angle du capteur gyroscopique");
-		return capteurGyro.directionAngle();
-	}*/
+	}*/	
 	
 	/*public void EtatRobot()
 	{
@@ -202,32 +224,44 @@ public class VehiculeControler {
 		//retourner l’état du robot au format json
 	}*/
 	
-	/*public void request(Chaine de caractère message)
-	{
-		if(message = “getEtatRobot”)
-		{
-			envoyer une requête avec l’état du robot getEtatRobot()
-		}
-		else if 
-		{
-		...
-		}
-		logger.info("request() : envoi d’une requête " + message +");
-	}
-	
-	// public void utile à cette classe
-	public void motorIsStart()
-	{
-		return moteur.getEtatMoteur();
-	}
-	*/
-	
 	public Etat getEtatVehicule() {
 		return etatVehicule;
 	}
 
 	public void setEtatVehicule(Etat etatVehicule) {
 		this.etatVehicule = etatVehicule;
+	}
+	
+	public int getVitesseRange() {
+		return vitesseRange;
+	}
+
+	public void setVitesseRange(int vitesseRange) {
+		this.vitesseRange = vitesseRange;
+	}
+	
+	public Motor getMoteurGauche() {
+		return moteurGauche;
+	}
+
+	public void setMoteurGauche(Motor moteurGauche) {
+		this.moteurGauche = moteurGauche;
+	}
+
+	public Motor getMoteurDroit() {
+		return moteurDroit;
+	}
+	
+	public void setMoteurDroit(Motor moteurDroit) {
+		this.moteurDroit = moteurDroit;
+	}
+	
+	public int getVitesseBase() {
+		return vitesseBase;
+	}
+
+	public void setVitesseBase(int vitesseBase) {
+		this.vitesseBase = vitesseBase;
 	}
 
 }

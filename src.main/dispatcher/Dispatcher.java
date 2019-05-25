@@ -23,13 +23,30 @@ public class Dispatcher {
 	private static DataOutputStream out; 
 	private static DataInputStream in;
 	private static BTConnection BTConnect;
-	static String commande;
+	static String affiche;
+	static int commande;
 	static boolean stop_app;
 	static VehiculeControler vehiculeControler;
 	
-	public static void main(String[] args) throws InterruptedException {
-    	/*connect();*/
+	public static void main(String[] args) throws InterruptedException, IOException {
 		EV3 ev3 = (EV3) BrickFinder.getLocal();
+		TextLCD lcd = ev3.getTextLCD();
+		connect();
+		
+				
+		lcd.drawString("attente", 4, 4);
+    	
+    	Thread.sleep(2500);
+    	lcd.clear();
+    	lcd.drawString("envoie", 4, 4);
+    	Thread.sleep(10000);
+    	commande = (int) in.readByte();  
+    	
+    	affiche = String.valueOf(commande);
+    	
+		lcd.drawString(affiche, 4, 4);
+		Thread.sleep(10000);
+		/*EV3 ev3 = (EV3) BrickFinder.getLocal();
 		TextLCD lcd = ev3.getTextLCD();
 		lcd.drawString("tata", 4, 4);
     	stop_app = true;
@@ -46,7 +63,7 @@ public class Dispatcher {
     		}
     	}*/  
     	
-    	 vehiculeControler.start();
+    	 /*vehiculeControler.start();
     	 lcd.clear();
     	 lcd.drawString("Demarrer", 4, 4);
     	 
@@ -93,7 +110,7 @@ public class Dispatcher {
     	 lcd.clear();
     	 lcd.drawString("Stop", 4, 4);
     	 
-    	 Thread.sleep(2500);
+    	 Thread.sleep(2500);*/
 	}
 	
 	

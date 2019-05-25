@@ -7,9 +7,10 @@ public class Motor {
 	private RegulatedMotor motor;
 	private int speed ;
 	private int previousSpeed ;
+	private int vitesseBase = 50;
 
-	public Motor(RegulatedMotor _motor) {
-		this.motor =_motor;
+	public Motor(RegulatedMotor amotor) {
+		this.motor = amotor;
 	}
 	
 	public int getPreviousSpeed() {
@@ -30,12 +31,12 @@ public class Motor {
 	}
 
 	public void backward() {
-		setSpeed(50);
+		setSpeed(vitesseBase);
 		motor.backward();
 	}
 	
 	public void forward() {
-		setSpeed(50);
+		setSpeed(vitesseBase);
 		motor.forward();
 	}
 	
