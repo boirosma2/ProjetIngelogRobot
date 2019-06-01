@@ -7,8 +7,8 @@ import ressources.Etat;
 
 public class VehiculeControler {
 
-	Etat etatVehicule;
-	int vitesse;
+	Etat etatVehicule, saveEtatVehicule;
+	int vitesse, saveVitesseMoteurGauche, saveVitesseMoteurDroit;
 	private Motor moteurGauche;
 	private Motor moteurDroit;
 
@@ -148,26 +148,48 @@ public class VehiculeControler {
 			neutral();
 		}
 	}
-	/*
-	 * public void urgency() { moteur.urgency();
-	 * logger.info("urgency() : le véhicule se bloque"); }
-	 * 
-	 * public void breakdown() { moteur.breakdown();
-	 * logger.info("breakdown() : simulation de panne"); }
-	 * 
-	 * public void restore() { moteur.restoreMotor();
-	 * logger.info("restore() : le véhicule restaure son état"); } /*public void
-	 * contact() { logger.info("contact() : le véhicule a eu un contact"); return
-	 * capteurContact.contact(); }
-	 * 
-	 * public void obstacleDetection() {
-	 * logger.info("obstacleDetection() : le véhicule a observé un obstacle");
-	 * return capteurUltrason.detect(); }
-	 * 
-	 * public void brightness() {
-	 * logger.info("brightness() : le véhicule a repéré une couleur"); return
-	 * capteurCouleur.color(); }
-	 */
+
+	public void urgency() {
+		moteurGauche.getMotor().startSynchronization();
+		saveVitesseMoteurGauche = moteurGauche.getSpeed();
+		saveVitesseMoteurDroit = moteurDroit.getSpeed();
+		moteurGauche.stop();
+		moteurDroit.stop();
+		moteurGauche.getMotor().endSynchronization();
+		saveEtatVehicule = etatVehicule;
+		etatVehicule = Etat.urgency;
+	}
+
+	public void breakdown() {
+		moteurGauche.getMotor().startSynchronization();
+		saveVitesseMoteurGauche = moteurGauche.getSpeed();
+		saveVitesseMoteurDroit = moteurDroit.getSpeed();
+		moteurGauche.stop();
+		moteurDroit.stop();
+		moteurGauche.getMotor().endSynchronization();
+		saveEtatVehicule = etatVehicule;
+		etatVehicule = Etat.panne;
+	}
+
+	public void restore() {
+		moteurGauche.getMotor().startSynchronization();
+		moteurGauche.setSpeed(saveVitesseMoteurGauche);
+		moteurDroit.setSpeed(saveVitesseMoteurDroit);
+		moteurGauche.getMotor().endSynchronization();
+		etatVehicule = saveEtatVehicule;
+	} /*
+		 * public void contact() {
+		 * logger.info("contact() : le véhicule a eu un contact"); return
+		 * capteurContact.contact(); }
+		 * 
+		 * /* public void obstacleDetection() {
+		 * logger.info("obstacleDetection() : le véhicule a observé un obstacle");
+		 * return capteurUltrason.detect(); }
+		 * 
+		 * public void brightness() {
+		 * logger.info("brightness() : le véhicule a repéré une couleur"); return
+		 * capteurCouleur.color(); }
+		 */
 
 	/*
 	 * public void EtatRobot() { int vitesse; int angle; Etat etatMoteur; vitesse =
