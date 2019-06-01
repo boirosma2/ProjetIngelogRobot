@@ -30,7 +30,7 @@ public class VehiculeControler {
 		if (etatVehicule == Etat.contact) {
 			etatVehicule = Etat.neutral;
 		} else {
-			System.out.println("Moteur déjà démarré");
+			System.out.println("Moteur deja demarre");
 		}
 	}
 
@@ -38,7 +38,7 @@ public class VehiculeControler {
 		if (etatVehicule == Etat.neutral) {
 			etatVehicule = Etat.contact;
 		} else {
-			System.out.println("vehicule déjà éteint");
+			System.out.println("vehicule deja eteint");
 		}
 	}
 
@@ -51,7 +51,7 @@ public class VehiculeControler {
 			moteurGauche.getMotor().endSynchronization();
 
 		} else {
-			System.out.println("vehicule déjà à l'arret");
+			System.out.println("vehicule deja a l arret");
 		}
 	}
 
@@ -104,7 +104,7 @@ public class VehiculeControler {
 			moteurDroit.setSpeed((int) (moteurDroit.getSpeed() * 1.33));
 			moteurGauche.getMotor().endSynchronization();
 		} else {
-			System.out.println("Impossible de faire tourner à gauche");
+			System.out.println("Impossible de faire tourner a gauche");
 		}
 	}
 
@@ -118,7 +118,7 @@ public class VehiculeControler {
 			moteurDroit.setSpeed((int) (moteurDroit.getSpeed() * 0.66));
 			moteurGauche.getMotor().endSynchronization();
 		} else {
-			System.out.println("Impossible de faire tourner à droite");
+			System.out.println("Impossible de faire tourner a droite");
 		}
 	}
 

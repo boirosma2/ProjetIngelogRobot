@@ -17,33 +17,59 @@ public class Dispatcher {
 
 	// Variables d’instances
 	Dispatcher myDispatcher;
-	VehiculeControler vehicleControler;
+	VehiculeControler vehiculeControler;
 
 	private static DataOutputStream out;
 	private static DataInputStream in;
 	private static BTConnection BTConnect;
-	static String affiche;
-	static int commande;
-	static boolean stop_app;
-	static VehiculeControler vehiculeControler;
+	private static int commande = 10;
+	private static boolean stop = true;
 
 	public static void main(String[] args) throws InterruptedException, IOException {
-		EV3 ev3 = (EV3) BrickFinder.getLocal();
-		TextLCD lcd = ev3.getTextLCD();
 		connect();
-
-		lcd.drawString("attente", 4, 4);
-
-		Thread.sleep(2500);
-		lcd.clear();
-		lcd.drawString("envoie", 4, 4);
-		Thread.sleep(10000);
-		commande = (int) in.readByte();
-
-		affiche = String.valueOf(commande);
-
-		lcd.drawString(affiche, 4, 4);
-		Thread.sleep(10000);
+		
+		VehiculeControler vehicule = new VehiculeControler();
+		
+		while(stop) {
+			try {
+				commande = (int) in.readByte();
+				switch (commande) {
+					case 0:
+						vehicule.start();
+						break;
+					case 1:
+						vehicule.stop();
+						break;
+					case 2:
+						vehicule.droite();
+						break;
+					case 3:
+						vehicule.gauche();
+						break;
+					case 4:
+						vehicule.forward();
+						break;
+					case 5:
+						vehicule.backward();
+						break;
+					case 6:
+						vehicule.accelerer();
+						break;
+					case 7:
+						vehicule.ralentir();
+						break;
+					case 9:
+						stop = false;
+						in.close();
+						out.close();
+						break;
+					default :
+						break;
+				}
+			} catch (IOException ioe) {
+				System.out.println("Exception erreur readByte");
+			}
+		}
 		/*
 		 * EV3 ev3 = (EV3) BrickFinder.getLocal(); TextLCD lcd = ev3.getTextLCD();
 		 * lcd.drawString("tata", 4, 4); stop_app = true; lcd.drawString("tete", 4, 4);
@@ -89,7 +115,7 @@ public class Dispatcher {
 	}
 
 	public Dispatcher() {
-		vehicleControler = new VehiculeControler();
+		vehiculeControler = new VehiculeControler();
 	}
 
 	public Dispatcher getInstance() {
@@ -99,42 +125,8 @@ public class Dispatcher {
 		return myDispatcher;
 	}
 
-	public static void dispatch(String expression) throws IOException {
-		switch (expression) {
-		case "on":
-			vehiculeControler.start();
-			break;
-		case "off":
-			vehiculeControler.stop();
-			break;
-		case "forward":
-			vehiculeControler.forward();
-			break;
-		case "backward":
-			vehiculeControler.backward();
-			break;
-		case "up":
-			vehiculeControler.accelerer();
-			break;
-		case "down":
-			vehiculeControler.ralentir();
-			break;
-		case "urgency":
-			vehiculeControler.urgency();
-			break;
-		case "breakdown":
-			vehiculeControler.breakdown();
-			break;
-		case "restore":
-			vehiculeControler.restore();
-			break;
-		default:
-			stop_app = false;
-			in.close();
-			out.close();
-			break;
-
-		}
+	public void dispatch() {
+		//inutile au bout du compte
 	}
 
 	public void retrieve() {
@@ -149,7 +141,7 @@ public class Dispatcher {
 		BTConnector BTconnector = (BTConnector) Bluetooth.getNXTCommConnector();
 		BTConnect = (BTConnection) BTconnector.waitForConnection(30000, NXTConnection.RAW);
 		out = BTConnect.openDataOutputStream();
-		in = (DataInputStream) BTConnect.openDataInputStream();
+		in = BTConnect.openDataInputStream();
 	}
 
 }
