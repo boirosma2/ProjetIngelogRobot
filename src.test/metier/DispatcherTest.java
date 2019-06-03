@@ -17,13 +17,13 @@ public class DispatcherTest {
 	}
 
 	@Test
-	public void testStart() {
+	public void testOn() {
 
 		VehiculeControler vehicule = new VehiculeControler();
 
 		assertEquals(Etat.contact, vehicule.getEtatVehicule());
 
-		vehicule.start();
+		vehicule.on();
 		assertEquals(Etat.neutral, vehicule.getEtatVehicule());
 	}
 
@@ -37,20 +37,20 @@ public class DispatcherTest {
 	}
 
 	@Test
-	public void testNeutralForward() {
+	public void testStopForward() {
 
-		vehicule.start();
+		vehicule.on();
 		vehicule.forward();
-		vehicule.neutral();
+		vehicule.stop();
 		assertEquals(Etat.neutral, vehicule.getEtatVehicule());
 	}
 
 	@Test
-	public void testNeutralBackward() {
+	public void testStopBackward() {
 
-		vehicule.start();
+		vehicule.on();
 		vehicule.backward();
-		vehicule.neutral();
+		vehicule.stop();
 		assertEquals(Etat.neutral, vehicule.getEtatVehicule());
 	}
 
@@ -61,11 +61,11 @@ public class DispatcherTest {
 		vehicule.forward();
 		assertEquals(Etat.contact, vehicule.getEtatVehicule());
 
-		vehicule.start();
+		vehicule.on();
 		vehicule.forward();
 		assertEquals(Etat.forward, vehicule.getEtatVehicule());
-		assertEquals(50, vehicule.getMoteurGauche().getSpeed());
-		assertEquals(50, vehicule.getMoteurDroit().getSpeed());
+		assertEquals(50, vehicule.getMoteurGauche().getPower());
+		assertEquals(50, vehicule.getMoteurDroit().getPower());
 
 	}
 
@@ -77,66 +77,89 @@ public class DispatcherTest {
 		vehicule.backward();
 		assertEquals(Etat.contact, vehicule.getEtatVehicule());
 
-		vehicule.start();
+		vehicule.on();
 		vehicule.backward();
 		assertEquals(Etat.backward, vehicule.getEtatVehicule());
-		assertEquals(50, vehicule.getMoteurGauche().getSpeed());
-		assertEquals(50, vehicule.getMoteurDroit().getSpeed());
+		assertEquals(50, vehicule.getMoteurGauche().getPower());
+		assertEquals(50, vehicule.getMoteurDroit().getPower());
 	}
 
 	@Test
-	public void testGauche() {
+	public void testLeft() {
 
 		int vitesse;
 
-		vehicule.start();
+		vehicule.on();
 		vehicule.forward();
-		vehicule.gauche();
+		vehicule.left();
 
 		vitesse = (int) ((int) vehicule.getVitesseBase() * 0.66);
-		assertEquals(vitesse, vehicule.getMoteurGauche().getSpeed());
+		assertEquals(vitesse, vehicule.getMoteurGauche().getPower());
 
 		vitesse = (int) ((int) vehicule.getVitesseBase() * 1.33);
-		assertEquals(50, vehicule.getMoteurDroit().getSpeed());
+		assertEquals(50, vehicule.getMoteurDroit().getPower());
 	}
 
 	@Test
-	public void testDroite() {
+	public void testRight() {
 		int vitesse;
 
-		vehicule.start();
+		vehicule.on();
 		vehicule.forward();
-		vehicule.gauche();
+		vehicule.left();
 
 		vitesse = (int) ((int) vehicule.getVitesseBase() * 1.33);
-		assertEquals(vitesse, vehicule.getMoteurGauche().getSpeed());
+		assertEquals(vitesse, vehicule.getMoteurGauche().getPower());
 
 		vitesse = (int) ((int) vehicule.getVitesseBase() * 0.66);
-		assertEquals(50, vehicule.getMoteurDroit().getSpeed());
+		assertEquals(50, vehicule.getMoteurDroit().getPower());
 	}
 
 	@Test
-	public void testAccelerer() {
-		vehicule.start();
+	public void testUp() {
+		vehicule.on();
 		vehicule.forward();
-		vehicule.accelerer();
+		vehicule.up();
 
-		assertEquals(vehicule.getVitesseBase() + vehicule.getVitesseRange(), vehicule.getMoteurDroit().getSpeed());
-		assertEquals(vehicule.getVitesseBase() + vehicule.getVitesseRange(), vehicule.getMoteurGauche().getSpeed());
+		assertEquals(vehicule.getVitesseBase() + vehicule.getVitesseRange(), vehicule.getMoteurDroit().getPower());
+		assertEquals(vehicule.getVitesseBase() + vehicule.getVitesseRange(), vehicule.getMoteurGauche().getPower());
 	}
 
 	@Test
-	public void testRalentir() {
-		vehicule.start();
+	public void testDown() {
+		vehicule.on();
 		vehicule.forward();
-		vehicule.ralentir();
+		vehicule.down();
 
-		assertEquals(vehicule.getVitesseBase() - vehicule.getVitesseRange(), vehicule.getMoteurDroit().getSpeed());
-		assertEquals(vehicule.getVitesseBase() - vehicule.getVitesseRange(), vehicule.getMoteurGauche().getSpeed());
+		assertEquals(vehicule.getVitesseBase() - vehicule.getVitesseRange(), vehicule.getMoteurDroit().getPower());
+		assertEquals(vehicule.getVitesseBase() - vehicule.getVitesseRange(), vehicule.getMoteurGauche().getPower());
 
-		vehicule.ralentir();
-		assertEquals(0, vehicule.getMoteurDroit().getSpeed());
-		assertEquals(0, vehicule.getMoteurGauche().getSpeed());
+		vehicule.down();
+		assertEquals(0, vehicule.getMoteurDroit().getPower());
+		assertEquals(0, vehicule.getMoteurGauche().getPower());
 		assertEquals(Etat.neutral, vehicule.getEtatVehicule());
 	}
+
+	@Test
+	public void testUrgency() {
+		vehicule.on();
+		vehicule.forward();
+		vehicule.urgency();
+
+		assertEquals(0, vehicule.getMoteurDroit().getPower());
+		assertEquals(0, vehicule.getMoteurGauche().getPower());
+		assertEquals(Etat.urgency, vehicule.getEtatVehicule());
+	}
+
+	@Test
+	public void testBreakdown() {
+		vehicule.on();
+		vehicule.forward();
+		vehicule.breakdown();
+
+		assertEquals(0, vehicule.getMoteurDroit().getPower());
+		assertEquals(0, vehicule.getMoteurGauche().getPower());
+		assertEquals(Etat.panne, vehicule.getEtatVehicule());
+	}
+
 }
