@@ -32,7 +32,7 @@ public class Dispatcher {
 				commande = (int) in.readByte();
 				switch (commande) {
 				case 0:
-					vehicule.on();
+					vehicule.start();
 					break;
 				case 1:
 					vehicule.stop();
@@ -79,17 +79,6 @@ public class Dispatcher {
 			myDispatcher = new Dispatcher();
 		}
 		return myDispatcher;
-	}
-
-	public void dispatch() {
-		// inutile au bout du compte
-	}
-
-	public void retrieve() {
-		// programme d’écoute du réseau avec utilisation de socket
-		// lors de la réception d’une requête, la méthode dispatch(
-		// “route”) est appelée pour exécuter la méthode concerné du
-		// contrôleur.
 	}
 
 	public static void connect() {

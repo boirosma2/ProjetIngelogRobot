@@ -4,52 +4,43 @@ import lejos.robotics.RegulatedMotor;
 
 public class Motor {
 
-	private RegulatedMotor motor;
-	private int power;
-	private int previousPower;
-	private int vitesseBase = 50;
+	private RegulatedMotor motorLejos;
+	private int vitesse;
 
-	public Motor(RegulatedMotor amotor) {
-		this.motor = amotor;
+	public Motor(RegulatedMotor motorLejos) {
+		this.motorLejos = motorLejos;
+		this.vitesse = 0;
 	}
 
-	public int getPreviousPower() {
-		return previousPower;
+	public int getVitesse() {
+		return vitesse;
 	}
 
-	public void setPreviousPower(int previousPower) {
-		this.previousPower = previousPower;
+	public void setVitesse(int vitesse) {
+		this.vitesse = vitesse;
+		motorLejos.setSpeed(vitesse);
 	}
 
-	public int getPower() {
-		return power;
+	public void pull(int vitesse) {
+		setVitesse(vitesse);
+		motorLejos.backward();
 	}
 
-	public void setPower(int power) {
-		this.power = power;
-		motor.setSpeed(power);
+	public void push(int vitesse) {
+		setVitesse(vitesse);
+		motorLejos.forward();
 	}
 
-	public void backward() {
-		setPower(vitesseBase);
-		motor.backward();
+	public RegulatedMotor getMotorLejos() {
+		return motorLejos;
 	}
 
-	public void forward() {
-		setPower(vitesseBase);
-		motor.forward();
+	public void setMotorLejos(RegulatedMotor motorLejos) {
+		this.motorLejos = motorLejos;
 	}
 
-	public RegulatedMotor getMotor() {
-		return motor;
-	}
-
-	public void setMotor(RegulatedMotor motor) {
-		this.motor = motor;
-	}
-
-	public void stop() {
-		motor.stop();
-		setPower(0);
+	public void stopped() {
+		motorLejos.stop();
+		setVitesse(0);
 	}
 }
