@@ -16,7 +16,7 @@ public class VehiculeControler {
 
 	public VehiculeControler() {
 		etatVehicule = Etat.off;
-		this.moteurGauche = new Motor(new EV3LargeRegulatedMotor(MotorPort.D));
+		this.moteurGauche = new Motor(new EV3LargeRegulatedMotor(MotorPort.B));
 		this.moteurDroit = new Motor(new EV3LargeRegulatedMotor(MotorPort.A));
 		RegulatedMotor T[] = { this.moteurDroit.getMotorLejos() };
 		this.moteurGauche.getMotorLejos().synchronizeWith(T);
@@ -36,8 +36,8 @@ public class VehiculeControler {
 	}
 
 	public void stop() {
-		if (etatVehicule != Etat.neutral) {
-			etatVehicule = Etat.neutral;
+		if (etatVehicule != Etat.off) {
+			etatVehicule = Etat.off;
 			moteurGauche.getMotorLejos().startSynchronization();
 			moteurGauche.stopped();
 			moteurDroit.stopped();
@@ -102,7 +102,7 @@ public class VehiculeControler {
 	public void left() {
 		if (etatVehicule == Etat.forward || etatVehicule == Etat.backward) {
 			moteurGauche.getMotorLejos().startSynchronization();
-			moteurGauche.setVitesse((int) (moteurGauche.getVitesse() * 0.66));
+			moteurGauche.setVitesse((int) (moteurGauche.getVitesse() * 0.67));
 			moteurDroit.setVitesse((int) (moteurDroit.getVitesse() * 1.33));
 			moteurGauche.getMotorLejos().endSynchronization();
 			saveVitesseMoteurGauche = moteurGauche.getVitesse();
@@ -117,7 +117,7 @@ public class VehiculeControler {
 		if (etatVehicule == Etat.forward || etatVehicule == Etat.backward) {
 			moteurGauche.getMotorLejos().startSynchronization();
 			moteurGauche.setVitesse((int) (moteurGauche.getVitesse() * 1.33));
-			moteurDroit.setVitesse((int) (moteurDroit.getVitesse() * 0.66));
+			moteurDroit.setVitesse((int) (moteurDroit.getVitesse() * 0.67));
 			moteurGauche.getMotorLejos().endSynchronization();
 			saveVitesseMoteurGauche = moteurGauche.getVitesse();
 			saveVitesseMoteurDroit = moteurDroit.getVitesse();

@@ -17,9 +17,7 @@ public class DispatcherTest {
 	}
 
 	@Test
-	public void testOn() {
-
-		VehiculeControler vehicule = new VehiculeControler();
+	public void testStart() {
 
 		assertEquals(Etat.off, vehicule.getEtatVehicule());
 
@@ -29,10 +27,11 @@ public class DispatcherTest {
 
 	@Test
 	public void testStop() {
-		assertEquals(Etat.neutral, vehicule.getEtatVehicule());
+		assertEquals(Etat.off, vehicule.getEtatVehicule());
 
+		vehicule.start();
 		vehicule.stop();
-		assertEquals(Etat.contact, vehicule.getEtatVehicule());
+		assertEquals(Etat.off, vehicule.getEtatVehicule());
 
 	}
 
@@ -42,7 +41,7 @@ public class DispatcherTest {
 		vehicule.start();
 		vehicule.forward();
 		vehicule.stop();
-		assertEquals(Etat.neutral, vehicule.getEtatVehicule());
+		assertEquals(Etat.off, vehicule.getEtatVehicule());
 	}
 
 	@Test
@@ -51,15 +50,15 @@ public class DispatcherTest {
 		vehicule.start();
 		vehicule.backward();
 		vehicule.stop();
-		assertEquals(Etat.neutral, vehicule.getEtatVehicule());
+		assertEquals(Etat.off, vehicule.getEtatVehicule());
 	}
 
 	@Test
 	public void testForward() {
-		assertEquals(Etat.contact, vehicule.getEtatVehicule());
+		assertEquals(Etat.off, vehicule.getEtatVehicule());
 
 		vehicule.forward();
-		assertEquals(Etat.contact, vehicule.getEtatVehicule());
+		assertEquals(Etat.off, vehicule.getEtatVehicule());
 
 		vehicule.start();
 		vehicule.forward();
@@ -72,10 +71,7 @@ public class DispatcherTest {
 	@Test
 	public void testBackward() {
 
-		assertEquals(Etat.contact, vehicule.getEtatVehicule());
-
-		vehicule.backward();
-		assertEquals(Etat.contact, vehicule.getEtatVehicule());
+		assertEquals(Etat.off, vehicule.getEtatVehicule());
 
 		vehicule.start();
 		vehicule.backward();
@@ -93,7 +89,7 @@ public class DispatcherTest {
 		vehicule.forward();
 		vehicule.left();
 
-		vitesse = (int) ((int) vehicule.saveVitesseMoteurGauche * 0.66);
+		vitesse = (int) ((int) vehicule.saveVitesseMoteurGauche * 0.67);
 		assertEquals(vitesse, vehicule.getMoteurGauche().getVitesse());
 
 		vitesse = (int) ((int) vehicule.saveVitesseMoteurDroit * 1.33);
@@ -106,12 +102,12 @@ public class DispatcherTest {
 
 		vehicule.start();
 		vehicule.forward();
-		vehicule.left();
+		vehicule.right();
 
 		vitesse = (int) ((int) vehicule.saveVitesseMoteurGauche * 1.33);
 		assertEquals(vitesse, vehicule.getMoteurGauche().getVitesse());
 
-		vitesse = (int) ((int) vehicule.saveVitesseMoteurDroit * 0.66);
+		vitesse = (int) ((int) vehicule.saveVitesseMoteurDroit * 0.67);
 		assertEquals(vitesse, vehicule.getMoteurDroit().getVitesse());
 	}
 
@@ -129,11 +125,7 @@ public class DispatcherTest {
 	public void testDown() {
 		vehicule.start();
 		vehicule.forward();
-		vehicule.down();
-
-		assertEquals(vehicule.getVitesseRange() - vehicule.getVitesseRange(), vehicule.getMoteurDroit().getVitesse());
-		assertEquals(vehicule.getVitesseRange() - vehicule.getVitesseRange(), vehicule.getMoteurGauche().getVitesse());
-
+		
 		vehicule.down();
 		assertEquals(0, vehicule.getMoteurDroit().getVitesse());
 		assertEquals(0, vehicule.getMoteurGauche().getVitesse());
