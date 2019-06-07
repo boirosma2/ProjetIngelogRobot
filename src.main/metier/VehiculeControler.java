@@ -15,9 +15,10 @@ public class VehiculeControler {
 	int vitesseRange = 25;
 
 	public VehiculeControler() {
+		//Mise en place du VehiculeControler avec l'instanciation des moteurs
 		etatVehicule = Etat.off;
-		this.moteurGauche = new Motor(new EV3LargeRegulatedMotor(MotorPort.B));
-		this.moteurDroit = new Motor(new EV3LargeRegulatedMotor(MotorPort.A));
+		this.moteurGauche = new Motor(new EV3LargeRegulatedMotor(MotorPort.D));
+		this.moteurDroit = new Motor(new EV3LargeRegulatedMotor(MotorPort.B));
 		RegulatedMotor T[] = { this.moteurDroit.getMotorLejos() };
 		this.moteurGauche.getMotorLejos().synchronizeWith(T);
 		saveVitesseMoteurGauche = 0;
@@ -25,8 +26,8 @@ public class VehiculeControler {
 	}
 
 	public void start() {
-		// certaines conditions sont intégrées dans des public voids
-		// intermédiaires afin de ne pas polluer le code.
+		//Si l'état est à off alors on le passe à neutral
+		//Simulation du démarrage des moteurs
 		if (etatVehicule == Etat.off) {
 			etatVehicule = Etat.neutral;
 			System.out.println("start() : Passage de l'etat moteur a neutral");
@@ -36,6 +37,8 @@ public class VehiculeControler {
 	}
 
 	public void stop() {
+		//Si l'état n'est pas off alors on le met à off et on stop tous les moteurs
+		//Simulation d'éteindre les moteurs
 		if (etatVehicule != Etat.off) {
 			etatVehicule = Etat.off;
 			moteurGauche.getMotorLejos().startSynchronization();
@@ -51,9 +54,8 @@ public class VehiculeControler {
 	}
 
 	public void forward() {
-		// si le moteur est en marche arrière il doit d’abord passer
-		// par l’état neutral
-		// (point mort) pour pouvoir être en marche avant (forward)
+		//Si le moteur est en marche arrière il doit d’abord passer
+		//Par l’état neutral (point mort) pour pouvoir être en marche avant (forward)
 		if (etatVehicule == Etat.neutral) {
 			etatVehicule = Etat.forward;
 			moteurGauche.getMotorLejos().startSynchronization();
@@ -63,6 +65,7 @@ public class VehiculeControler {
 			saveVitesseMoteurGauche = moteurGauche.getVitesse();
 			saveVitesseMoteurDroit = moteurDroit.getVitesse();
 			System.out.println("forward() : le moteur tourne en avant");
+			//Si l'état est déjà à forward alors on augmente la vitesse des moteurs
 		} else if (etatVehicule == Etat.forward) {
 			moteurGauche.getMotorLejos().startSynchronization();
 			moteurGauche.setVitesse(moteurGauche.getVitesse() + vitesseRange);
@@ -77,6 +80,8 @@ public class VehiculeControler {
 	}
 
 	public void backward() {
+		//Si le moteur est en marche avant il doit d’abord passer
+		//Par l’état neutral (point mort) pour pouvoir être en marche arrière (backward)
 		if (etatVehicule == Etat.neutral) {
 			etatVehicule = Etat.backward;
 			moteurGauche.getMotorLejos().startSynchronization();
@@ -86,6 +91,7 @@ public class VehiculeControler {
 			saveVitesseMoteurGauche = moteurGauche.getVitesse();
 			saveVitesseMoteurDroit = moteurDroit.getVitesse();
 			System.out.println("backward() : le moteur tourne en arriere");
+			//Si l'état est déjà à backward alors on augmente les vitesses des moteurs
 		} else if (etatVehicule == Etat.backward) {
 			moteurGauche.getMotorLejos().startSynchronization();
 			moteurGauche.setVitesse(moteurGauche.getVitesse() + vitesseRange);
@@ -100,6 +106,9 @@ public class VehiculeControler {
 	}
 
 	public void left() {
+		//Si le moteur est en marche avant ou en marche arrière, alors on fait tourner le robot vers la gauche
+		//On augmente plus la vitesse de rotation du moteur droit et on diminue la vitesse du moteur gauche
+		//Ainsi, le robot va tourner vers la gauche
 		if (etatVehicule == Etat.forward || etatVehicule == Etat.backward) {
 			moteurGauche.getMotorLejos().startSynchronization();
 			moteurGauche.setVitesse((int) (moteurGauche.getVitesse() * 0.67));
@@ -114,6 +123,9 @@ public class VehiculeControler {
 	}
 
 	public void right() {
+		//Si le moteur est en marche avant ou en marche arrière, alors on fait tourner le robot vers la droite
+		//On augmente plus la vitesse de rotation du moteur gauche et on diminue la vitesse du moteur droit
+		//Ainsi, le robot va tourner vers la droite
 		if (etatVehicule == Etat.forward || etatVehicule == Etat.backward) {
 			moteurGauche.getMotorLejos().startSynchronization();
 			moteurGauche.setVitesse((int) (moteurGauche.getVitesse() * 1.33));
@@ -128,6 +140,7 @@ public class VehiculeControler {
 	}
 
 	public void up() {
+		//Si la vitesse maximum des moteurs n'est pas atteinte alors on augmente la vitesse des moteurs
 		if (moteurGauche.getVitesse() < 900 && moteurDroit.getVitesse() < 900) {
 			moteurGauche.getMotorLejos().startSynchronization();
 			moteurGauche.setVitesse(moteurGauche.getVitesse() + vitesseRange);
@@ -142,6 +155,9 @@ public class VehiculeControler {
 	}
 
 	public void down() {
+		//Si la vitesse des moteurs est supérieurs à la vitesse de rang
+		//Alors on diminue la vitesse grâce à la variable vitesseRange (25)
+		//Sinon on passe la vitesse des moteurs à 0 et on passe l'état à neutral
 		if (moteurGauche.getVitesse() > vitesseRange && moteurDroit.getVitesse() > vitesseRange) {
 			moteurGauche.getMotorLejos().startSynchronization();
 			moteurGauche.setVitesse(moteurGauche.getVitesse() - vitesseRange);
@@ -163,6 +179,9 @@ public class VehiculeControler {
 	}
 
 	public void urgency() {
+		//Simulation d'une urgence sur le robot
+		//Passage des moteurs à l'arrêt et l'état du robot à urgency
+		//On conserve la vitesse actuelle des moteurs et l'état du moteur
 		moteurGauche.getMotorLejos().startSynchronization();
 		saveVitesseMoteurGauche = moteurGauche.getVitesse();
 		saveVitesseMoteurDroit = moteurDroit.getVitesse();
@@ -175,6 +194,9 @@ public class VehiculeControler {
 	}
 
 	public void breakdown() {
+		//Simulation d'une panne sur le robot
+		//Passage des moteurs à l'arrêt et l'état du robot à panne
+		//On conserve la vitesse actuelle des moteurs et l'état du moteur
 		moteurGauche.getMotorLejos().startSynchronization();
 		saveVitesseMoteurGauche = moteurGauche.getVitesse();
 		saveVitesseMoteurDroit = moteurDroit.getVitesse();
@@ -187,6 +209,8 @@ public class VehiculeControler {
 	}
 
 	public void restore() {
+		//Restauration des anciennes valeurs de la vitesse et de l'état du robot
+		//Méthode qui est appelé après un état de panne ou urgency
 		moteurGauche.getMotorLejos().startSynchronization();
 		moteurGauche.setVitesse(saveVitesseMoteurGauche);
 		moteurDroit.setVitesse(saveVitesseMoteurDroit);

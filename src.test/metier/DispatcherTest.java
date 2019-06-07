@@ -2,6 +2,7 @@ package metier;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.BeforeClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,7 +19,7 @@ public class DispatcherTest {
 
 	@Test
 	public void testStart() {
-
+		
 		assertEquals(Etat.off, vehicule.getEtatVehicule());
 
 		vehicule.start();
@@ -27,6 +28,7 @@ public class DispatcherTest {
 
 	@Test
 	public void testStop() {
+		
 		assertEquals(Etat.off, vehicule.getEtatVehicule());
 
 		vehicule.start();
@@ -55,6 +57,7 @@ public class DispatcherTest {
 
 	@Test
 	public void testForward() {
+		
 		assertEquals(Etat.off, vehicule.getEtatVehicule());
 
 		vehicule.forward();
@@ -98,6 +101,7 @@ public class DispatcherTest {
 
 	@Test
 	public void testRight() {
+		
 		int vitesse;
 
 		vehicule.start();
@@ -113,6 +117,7 @@ public class DispatcherTest {
 
 	@Test
 	public void testUp() {
+		
 		vehicule.start();
 		vehicule.forward();
 		vehicule.up();
@@ -123,6 +128,7 @@ public class DispatcherTest {
 
 	@Test
 	public void testDown() {
+		
 		vehicule.start();
 		vehicule.forward();
 		
@@ -134,6 +140,7 @@ public class DispatcherTest {
 
 	@Test
 	public void testUrgency() {
+		
 		vehicule.start();
 		vehicule.forward();
 		vehicule.urgency();
@@ -145,6 +152,7 @@ public class DispatcherTest {
 
 	@Test
 	public void testBreakdown() {
+		
 		vehicule.start();
 		vehicule.forward();
 		vehicule.breakdown();

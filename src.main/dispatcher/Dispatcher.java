@@ -26,7 +26,9 @@ public class Dispatcher {
 		connect();
 
 		VehiculeControler vehicule = new VehiculeControler();
-
+			
+		//Boucle qui tourne en permanence
+		//Elle permet de lire les messages envoyer par le robot et d'exécuter la bonne méthode du VehiculeControler
 		while (stop) {
 			try {
 				commande = (int) in.readByte();
@@ -81,10 +83,13 @@ public class Dispatcher {
 		return myDispatcher;
 	}
 
+	//Méthode permettant la connection avec le smartphone
 	public static void connect() {
 		System.out.println("En attente");
+		//Mise en place de la connection bluetooth
 		BTConnector BTconnector = (BTConnector) Bluetooth.getNXTCommConnector();
 		BTConnect = (BTConnection) BTconnector.waitForConnection(30000, NXTConnection.RAW);
+		//Ouverture des l'écoute et de l'envoi de message
 		out = BTConnect.openDataOutputStream();
 		in = BTConnect.openDataInputStream();
 	}
