@@ -5,12 +5,17 @@ import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.*;
+
 
 import ressources.Etat;
 
 public class DispatcherTest {
 
 	private VehiculeControler vehicule;
+	private CapteurObstacle capteurPresence;
+	private CapteurContacte capteurContact;
+
 
 	@Before
 	public void init() {
@@ -102,7 +107,10 @@ public class DispatcherTest {
 	@Test
 	public void testRight() {
 		
+		
+		
 		int vitesse;
+		
 
 		vehicule.start();
 		vehicule.forward();
@@ -161,5 +169,33 @@ public class DispatcherTest {
 		assertEquals(0, vehicule.getMoteurGauche().getVitesse());
 		assertEquals(Etat.panne, vehicule.getEtatVehicule());
 	}
+	
+	@Test
+	public void testcapteurPresence() {
+		capteurPresence = Mockito.mock(CapteurObstacle.class);
+		when(capteurPresence.obstacleDetect()).thenReturn(true);
+		
+		vehicule.start();
+		vehicule.forward();
+		vehicule.up();
+
+		assertEquals(Etat.off, vehicule.getEtatVehicule());	
+		
+	}
+	
+	@Test
+	public void testcapteurContact() {
+		capteurContact = Mockito.mock(CapteurContacte.class);
+		when(capteurContact.contactObstacle()).thenReturn(true);
+		
+		assertEquals(Etat.off, vehicule.getEtatVehicule());
+
+		vehicule.start();
+		vehicule.backward();
+		
+		assertEquals(Etat.off, vehicule.getEtatVehicule());
+		
+	}
+	
 
 }
