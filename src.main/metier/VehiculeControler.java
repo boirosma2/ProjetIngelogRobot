@@ -50,7 +50,7 @@ public class VehiculeControler {
 		}
 	}
 
-	/**
+	/**	
 	 * Methode permettant l'arret des moteur et passage a l'etat off.
 	 */
 	public void stop() {

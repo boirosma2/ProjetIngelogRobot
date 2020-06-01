@@ -25,14 +25,9 @@ public class CapteurContacte {
 		this.capteurContacte = new EV3TouchSensor(port);
 	}
 	
-	/**
-	 * Méthode qui détecte 
-	 * @return (true) si un obstacle est détecté à la distace DISTANCE_OBST, (false) sinon.
-	 */
-	
 	
     /**
-     * Permet de savoir si la brique est entrée en contacte avec un objet se trouvant devant la brique via un capteur
+     * Permet de savoir si le robot est entrée en contacte avec un objet se trouvant devant lui via un capteur
      * EV3TouchSensor.
      * 
      * @return (true) si il y a contact, (false) sinon.

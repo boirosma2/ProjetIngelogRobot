@@ -33,7 +33,7 @@ public class CapteurObstacle {
 	
 	/**
 	 * Méthode qui détecte un obstacle à une distance DISTANCE_OBST
-	 * @return (true) si un obstacle est détecté à la distance DISTANCE_OBST, (false) sinon.
+	 * @return (true) si un obstacle est détecté à la distace DISTANCE_OBST, (false) sinon.
 	 */
 	public boolean obstacleDetect() {
 		boolean obstacle = false;
@@ -49,10 +49,6 @@ public class CapteurObstacle {
 			obstacle = true;
 		}
 		return obstacle;
-	}
-	
-	public boolean obstacleDetect(boolean b) {
-		return b;
 	}
 }
 
